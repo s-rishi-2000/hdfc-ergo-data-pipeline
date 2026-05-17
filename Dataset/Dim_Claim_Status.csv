@@ -1,0 +1,8 @@
+Claim_Status_SK,Claim_Status_ID,Claim_Status_Name,Status_Description
+1,SUBMITTED,Submitted,Claim submitted to insurance
+2,PENDING,Pending Review,Claim under review
+3,APPROVED,Approved,Claim approved for payment
+4,PAID,Paid,Payment issued
+5,DENIED,Denied,Claim denied by insurance
+6,APPEALED,Appealed,Claim under appeal
+7,ADJUSTED,Adjusted,Claim amount adjusted

@@ -1,0 +1,21 @@
+Service_Type_SK,Service_Type_ID,Service_Type_Name,Service_Category,Requires_Prior_Auth,Reference_Price
+1,ST_001,Office Visit - Primary Care,Office Visit,No,3578.21
+2,ST_002,Office Visit - Specialist,Office Visit,No,1824.18
+3,ST_003,Telehealth Visit,Telehealth,No,2056.4
+4,ST_004,Emergency Room,Emergency,Yes,3237.76
+5,ST_005,Urgent Care,Urgent Care,Yes,2317.83
+6,ST_006,Inpatient Hospital,Inpatient,Yes,209.56
+7,ST_007,Outpatient Surgery,Outpatient Surgery,Yes,4484.07
+8,ST_008,Diagnostic Imaging - X-Ray,Diagnostic,No,4886.32
+9,ST_009,Diagnostic Imaging - CT,Diagnostic,No,3641.81
+10,ST_010,Diagnostic Imaging - MRI,Diagnostic,No,4945.54
+11,ST_011,Laboratory Tests,Lab,No,1272.84
+12,ST_012,Pharmacy,Pharmacy,No,4890.2
+13,ST_013,Physical Therapy,Therapy,Yes,2650.17
+14,ST_014,Mental Health Visit,Mental Health,No,1349.47
+15,ST_015,Dental Visit,Dental,Yes,414.05
+16,ST_016,Vision Exam,Vision,No,864.48
+17,ST_017,Home Health,Home Health,Yes,4473.39
+18,ST_018,Rehabilitation,Rehab,No,3222.68
+19,ST_019,Skilled Nursing,Facilities,Yes,115.77
+20,ST_020,Other,Other,Yes,377.76

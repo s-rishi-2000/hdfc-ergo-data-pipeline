@@ -1,0 +1,101 @@
+ICD10_Code_SK,ICD10_Code,ICD10_Description,Category,Severity,Is_Preventable
+1,I01,Disease or Condition 1,Mental Health,Severe,No
+2,I02,Disease or Condition 2,Mental Health,Severe,No
+3,I03,Disease or Condition 3,Other,Mild,No
+4,I04,Disease or Condition 4,Chronic,Moderate,Yes
+5,I05,Disease or Condition 5,Injury,Moderate,Yes
+6,I06,Disease or Condition 6,Other,Severe,No
+7,I07,Disease or Condition 7,Infectious,Moderate,No
+8,I08,Disease or Condition 8,Mental Health,Mild,Yes
+9,I09,Disease or Condition 9,Other,Severe,No
+10,I10,Disease or Condition 10,Injury,Severe,Yes
+11,I11,Disease or Condition 11,Injury,Moderate,No
+12,I12,Disease or Condition 12,Mental Health,Severe,Yes
+13,I13,Disease or Condition 13,Mental Health,Severe,Yes
+14,I14,Disease or Condition 14,Other,Moderate,Yes
+15,I15,Disease or Condition 15,Chronic,Mild,No
+16,I16,Disease or Condition 16,Mental Health,Moderate,No
+17,I17,Disease or Condition 17,Injury,Moderate,Yes
+18,I18,Disease or Condition 18,Chronic,Severe,No
+19,I19,Disease or Condition 19,Other,Moderate,Yes
+20,I20,Disease or Condition 20,Injury,Mild,Yes
+21,I21,Disease or Condition 21,Chronic,Mild,Yes
+22,I22,Disease or Condition 22,Injury,Mild,Yes
+23,I23,Disease or Condition 23,Mental Health,Moderate,No
+24,I24,Disease or Condition 24,Mental Health,Mild,Yes
+25,I25,Disease or Condition 25,Injury,Mild,No
+26,I26,Disease or Condition 26,Injury,Mild,No
+27,I27,Disease or Condition 27,Chronic,Severe,Yes
+28,I28,Disease or Condition 28,Other,Moderate,Yes
+29,I29,Disease or Condition 29,Injury,Mild,Yes
+30,I30,Disease or Condition 30,Injury,Mild,Yes
+31,I31,Disease or Condition 31,Infectious,Mild,Yes
+32,I32,Disease or Condition 32,Chronic,Severe,No
+33,I33,Disease or Condition 33,Other,Severe,Yes
+34,I34,Disease or Condition 34,Infectious,Moderate,Yes
+35,I35,Disease or Condition 35,Other,Severe,No
+36,I36,Disease or Condition 36,Other,Severe,Yes
+37,I37,Disease or Condition 37,Mental Health,Severe,Yes
+38,I38,Disease or Condition 38,Other,Moderate,Yes
+39,I39,Disease or Condition 39,Chronic,Severe,No
+40,I40,Disease or Condition 40,Mental Health,Severe,Yes
+41,I41,Disease or Condition 41,Infectious,Moderate,Yes
+42,I42,Disease or Condition 42,Infectious,Mild,No
+43,I43,Disease or Condition 43,Injury,Severe,Yes
+44,I44,Disease or Condition 44,Chronic,Mild,No
+45,I45,Disease or Condition 45,Other,Severe,Yes
+46,I46,Disease or Condition 46,Other,Mild,Yes
+47,I47,Disease or Condition 47,Chronic,Severe,Yes
+48,I48,Disease or Condition 48,Mental Health,Moderate,Yes
+49,I49,Disease or Condition 49,Chronic,Mild,No
+50,E01,Disease or Condition 50,Chronic,Moderate,No
+51,E02,Disease or Condition 51,Injury,Mild,Yes
+52,E03,Disease or Condition 52,Chronic,Mild,Yes
+53,E04,Disease or Condition 53,Other,Moderate,Yes
+54,E05,Disease or Condition 54,Injury,Severe,Yes
+55,E06,Disease or Condition 55,Injury,Mild,No
+56,E07,Disease or Condition 56,Infectious,Severe,Yes
+57,E08,Disease or Condition 57,Other,Severe,No
+58,E09,Disease or Condition 58,Injury,Severe,Yes
+59,E10,Disease or Condition 59,Mental Health,Mild,Yes
+60,E11,Disease or Condition 60,Other,Mild,No
+61,E12,Disease or Condition 61,Chronic,Severe,Yes
+62,E13,Disease or Condition 62,Other,Moderate,Yes
+63,E14,Disease or Condition 63,Infectious,Moderate,No
+64,E15,Disease or Condition 64,Injury,Severe,Yes
+65,E16,Disease or Condition 65,Infectious,Moderate,Yes
+66,E17,Disease or Condition 66,Injury,Severe,Yes
+67,E18,Disease or Condition 67,Mental Health,Moderate,No
+68,E19,Disease or Condition 68,Injury,Mild,No
+69,E20,Disease or Condition 69,Other,Severe,Yes
+70,E21,Disease or Condition 70,Infectious,Severe,No
+71,E22,Disease or Condition 71,Infectious,Severe,Yes
+72,E23,Disease or Condition 72,Infectious,Severe,Yes
+73,E24,Disease or Condition 73,Other,Moderate,Yes
+74,E25,Disease or Condition 74,Other,Mild,Yes
+75,E26,Disease or Condition 75,Other,Mild,Yes
+76,E27,Disease or Condition 76,Chronic,Mild,Yes
+77,E28,Disease or Condition 77,Infectious,Mild,Yes
+78,E29,Disease or Condition 78,Mental Health,Severe,Yes
+79,E30,Disease or Condition 79,Injury,Mild,Yes
+80,E31,Disease or Condition 80,Infectious,Mild,No
+81,E32,Disease or Condition 81,Chronic,Severe,Yes
+82,E33,Disease or Condition 82,Injury,Mild,Yes
+83,E34,Disease or Condition 83,Injury,Mild,No
+84,E35,Disease or Condition 84,Chronic,Mild,No
+85,E36,Disease or Condition 85,Injury,Mild,Yes
+86,E37,Disease or Condition 86,Injury,Severe,No
+87,E38,Disease or Condition 87,Other,Moderate,No
+88,E39,Disease or Condition 88,Chronic,Mild,Yes
+89,E40,Disease or Condition 89,Infectious,Severe,Yes
+90,E41,Disease or Condition 90,Infectious,Mild,Yes
+91,E42,Disease or Condition 91,Infectious,Moderate,No
+92,E43,Disease or Condition 92,Other,Mild,No
+93,E44,Disease or Condition 93,Other,Severe,No
+94,E45,Disease or Condition 94,Injury,Moderate,Yes
+95,E46,Disease or Condition 95,Other,Moderate,Yes
+96,E47,Disease or Condition 96,Injury,Moderate,Yes
+97,E48,Disease or Condition 97,Other,Mild,No
+98,E49,Disease or Condition 98,Mental Health,Mild,Yes
+99,E50,Disease or Condition 99,Mental Health,Mild,Yes
+100,E51,Disease or Condition 100,Chronic,Severe,Yes

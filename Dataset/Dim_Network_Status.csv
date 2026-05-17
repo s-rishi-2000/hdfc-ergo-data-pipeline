@@ -1,0 +1,4 @@
+Network_Status_SK,Network_Status_ID,Network_Status_Name,Coinsurance_Percentage,Deductible_Applied,Prior_Auth_Required
+1,IN,In-Network,20,Yes,Sometimes
+2,OUT,Out-of-Network,40,Yes,Usually
+3,PREF,Preferred Network,15,No,Rarely

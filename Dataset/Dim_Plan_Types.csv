@@ -1,0 +1,8 @@
+Plan_Type_SK,Plan_Type_ID,Plan_Type_Name,Sum_Insured_Min,Sum_Insured_Max,Copay_Percentage_Min,Copay_Percentage_Max,Room_Rent_Limit,Network_Requirement,Pre_Hospitalization_Days,Post_Hospitalization_Days,Maternity_Coverage,Critical_Illness_Covered
+1,HEG,HDFC ERGO Gold,300000,1000000,0,0,10000,Pan-India,30,60,Yes,Yes
+2,HEP,HDFC ERGO Platinum,500000,5000000,0,0,Unlimited,Pan-India,30,60,Yes,Yes
+3,HES,HDFC ERGO Silver,250000,750000,10,20,5000,Regional,7,30,No,Yes
+4,HEM,HDFC ERGO Medicare,200000,500000,10,20,3000,Pan-India,7,30,Yes,Yes
+5,HEC,HDFC ERGO Care,150000,400000,15,25,2000,Pan-India,7,15,No,No
+6,HEF,HDFC ERGO Family,500000,2000000,0,0,7500,Pan-India,30,60,Yes,Yes
+7,HET,HDFC ERGO Top-Up,1000000,10000000,0,0,Unlimited,Pan-India,0,0,No,Yes
