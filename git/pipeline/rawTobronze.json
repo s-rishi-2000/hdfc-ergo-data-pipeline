@@ -67,7 +67,7 @@
 					{
 						"activity": "rawTobronze",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
