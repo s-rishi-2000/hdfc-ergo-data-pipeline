@@ -19,7 +19,7 @@
 						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
-							"fileListPath": "raw",
+							"recursive": true,
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -29,8 +29,7 @@
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings",
-							"copyBehavior": "PreserveHierarchy"
+							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
@@ -50,13 +49,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dsSource",
+						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "sinkDS",
+						"referenceName": "DelimitedText2",
 						"type": "DatasetReference"
 					}
 				]
