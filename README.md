@@ -169,3 +169,4 @@ The **dependency flow** ensures referential integrity:
 - [ ] Apply **Partition Pruning** (`PARTITION BY claim_date`) and **Z-Ordering** (`ZORDER BY member_sk`) on Fact tables.
 
 ---
+Disclaimer: This repository is a purely personal, self-made educational project developed for learning data engineering. It is not affiliated with, sponsored by, or endorsed by HDFC ERGO General Insurance Company. All data schemas, configurations, and scripts are simulated and use dummy data.
