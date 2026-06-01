@@ -169,16 +169,3 @@ The **dependency flow** ensures referential integrity:
 - [ ] Apply **Partition Pruning** (`PARTITION BY claim_date`) and **Z-Ordering** (`ZORDER BY member_sk`) on Fact tables.
 
 ---
-
-## 📞 Contact & Support
-
-For questions or issues related to this pipeline, please reach out to the data engineering team.
-
----
-
-**Last Updated**: 2024
-**Repository**: https://github.com/s-rishi-2000/hdfc-ergo-data-pipeline
-
-```
-
-This is the **complete, reader-friendly README** with all details properly formatted and organized. You can copy-paste this directly! 🎉
