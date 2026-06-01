@@ -1,0 +1,333 @@
+resources:
+  jobs:
+    transformation:
+      name: transformation
+      email_notifications:
+        on_start:
+          - underdog0101200@gmail.com
+        on_success:
+          - underdog0101200@gmail.com
+        on_failure:
+          - underdog0101200@gmail.com
+      schedule:
+        quartz_cron_expression: 32 0 9 * * ?
+        timezone_id: Asia/Calcutta
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: extract_claim_status
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_claim_status
+            source: WORKSPACE
+        - task_key: extract_cpt_codes
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_cpt_codes
+            source: WORKSPACE
+        - task_key: extract_date
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_date
+            source: WORKSPACE
+        - task_key: extract_facilities
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_facilities
+            source: WORKSPACE
+        - task_key: extract_fact_claims
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/fact_claims
+            source: WORKSPACE
+        - task_key: extract_fact_encounters
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/fact_encouonters
+            source: WORKSPACE
+        - task_key: extract_fact_labs
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/fact_labs
+            source: WORKSPACE
+        - task_key: extract_fact_pharmacy
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/fact_pharmacy
+            source: WORKSPACE
+        - task_key: extract_fact_procedures
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/fact_procedures
+            source: WORKSPACE
+        - task_key: extract_icd10_codes
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_icd10_code
+            source: WORKSPACE
+        - task_key: extract_member
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_members
+            source: WORKSPACE
+        - task_key: extract_nw_status
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_network_status
+            source: WORKSPACE
+        - task_key: extract_plan_types
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_plan_types
+            source: WORKSPACE
+        - task_key: extract_providers
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_providers
+            source: WORKSPACE
+        - task_key: extract_service_type
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/bronze/dim_service_types
+            source: WORKSPACE
+        - task_key: transform_claim_status
+          depends_on:
+            - task_key: extract_claim_status
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_claim_status
+            source: WORKSPACE
+        - task_key: load_claim_status
+          depends_on:
+            - task_key: transform_claim_status
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_claim_status
+            source: WORKSPACE
+        - task_key: transform_cpt_codes
+          depends_on:
+            - task_key: extract_cpt_codes
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_cpt_codes
+            source: WORKSPACE
+        - task_key: load_cpt_codes
+          depends_on:
+            - task_key: transform_cpt_codes
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_cpt_codes
+            source: WORKSPACE
+        - task_key: transform_date
+          depends_on:
+            - task_key: extract_date
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_date
+            source: WORKSPACE
+        - task_key: load_month
+          depends_on:
+            - task_key: transform_date
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_month
+            source: WORKSPACE
+        - task_key: load_date
+          depends_on:
+            - task_key: load_month
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_date
+            source: WORKSPACE
+        - task_key: transform_facilities
+          depends_on:
+            - task_key: extract_facilities
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_facilities
+            source: WORKSPACE
+        - task_key: transform_fact_claims
+          depends_on:
+            - task_key: extract_icd10_codes
+            - task_key: extract_service_type
+            - task_key: extract_fact_claims
+            - task_key: extract_providers
+            - task_key: extract_plan_types
+            - task_key: extract_claim_status
+            - task_key: extract_member
+            - task_key: extract_cpt_codes
+            - task_key: extract_nw_status
+            - task_key: extract_date
+            - task_key: extract_facilities
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/fact_claims
+            source: WORKSPACE
+        - task_key: transform_fact_encounters
+          depends_on:
+            - task_key: extract_service_type
+            - task_key: extract_providers
+            - task_key: extract_member
+            - task_key: extract_fact_encounters
+            - task_key: extract_facilities
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/fact_encounters
+            source: WORKSPACE
+        - task_key: transform_fact_labs
+          depends_on:
+            - task_key: extract_providers
+            - task_key: extract_member
+            - task_key: extract_cpt_codes
+            - task_key: extract_fact_labs
+            - task_key: extract_facilities
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/fact_labs
+            source: WORKSPACE
+        - task_key: transform_fact_pharmacy
+          depends_on:
+            - task_key: extract_fact_pharmacy
+            - task_key: extract_member
+            - task_key: extract_providers
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/fact_pharmacy
+            source: WORKSPACE
+        - task_key: transform_fact_procedures
+          depends_on:
+            - task_key: extract_fact_procedures
+            - task_key: extract_fact_claims
+            - task_key: extract_providers
+            - task_key: extract_member
+            - task_key: extract_cpt_codes
+            - task_key: extract_facilities
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/fact_procedures
+            source: WORKSPACE
+        - task_key: transform_icd10_codes
+          depends_on:
+            - task_key: extract_icd10_codes
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_icd10_codes
+            source: WORKSPACE
+        - task_key: load_icd10_codes
+          depends_on:
+            - task_key: transform_icd10_codes
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_icd10_codes
+            source: WORKSPACE
+        - task_key: transform_member
+          depends_on:
+            - task_key: extract_member
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_members
+            source: WORKSPACE
+        - task_key: transform_nw_status
+          depends_on:
+            - task_key: extract_nw_status
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_network_status
+            source: WORKSPACE
+        - task_key: load_nw_status
+          depends_on:
+            - task_key: transform_nw_status
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_network_status
+            source: WORKSPACE
+        - task_key: transform_plan_types
+          depends_on:
+            - task_key: extract_plan_types
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_plan_types
+            source: WORKSPACE
+        - task_key: load_plan_types
+          depends_on:
+            - task_key: transform_plan_types
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_plan_types
+            source: WORKSPACE
+        - task_key: transform_providers
+          depends_on:
+            - task_key: extract_providers
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_providers
+            source: WORKSPACE
+        - task_key: load_geo
+          depends_on:
+            - task_key: transform_member
+            - task_key: transform_providers
+            - task_key: transform_facilities
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_geography
+            source: WORKSPACE
+        - task_key: load_facilities
+          depends_on:
+            - task_key: transform_facilities
+            - task_key: load_geo
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_facilities
+            source: WORKSPACE
+        - task_key: load_member
+          depends_on:
+            - task_key: transform_member
+            - task_key: load_geo
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_members
+            source: WORKSPACE
+        - task_key: load_providers
+          depends_on:
+            - task_key: transform_providers
+            - task_key: load_geo
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_providers
+            source: WORKSPACE
+        - task_key: transform_service_type
+          depends_on:
+            - task_key: extract_service_type
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/silver/dim_service_types
+            source: WORKSPACE
+        - task_key: load_service_type
+          depends_on:
+            - task_key: transform_service_type
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/dim_service_types
+            source: WORKSPACE
+        - task_key: load_fact_claims
+          depends_on:
+            - task_key: transform_fact_claims
+            - task_key: load_claim_status
+            - task_key: load_providers
+            - task_key: load_service_type
+            - task_key: load_cpt_codes
+            - task_key: load_date
+            - task_key: load_icd10_codes
+            - task_key: load_facilities
+            - task_key: load_member
+            - task_key: load_plan_types
+            - task_key: load_nw_status
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/fact_claims
+            source: WORKSPACE
+        - task_key: load_fact_labs
+          depends_on:
+            - task_key: load_providers
+            - task_key: transform_fact_labs
+            - task_key: load_cpt_codes
+            - task_key: load_date
+            - task_key: load_facilities
+            - task_key: load_member
+            - task_key: load_fact_claims
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/fact_labs
+            source: WORKSPACE
+        - task_key: load_fact_pharmacy
+          depends_on:
+            - task_key: load_providers
+            - task_key: transform_fact_pharmacy
+            - task_key: load_date
+            - task_key: load_member
+            - task_key: load_fact_claims
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/fact_pharmacy
+            source: WORKSPACE
+        - task_key: load_fact_procedres
+          depends_on:
+            - task_key: load_providers
+            - task_key: load_cpt_codes
+            - task_key: load_date
+            - task_key: load_facilities
+            - task_key: load_member
+            - task_key: load_fact_claims
+            - task_key: transform_fact_procedures
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/fact_procedures
+            source: WORKSPACE
+        - task_key: load_fact_encounters
+          depends_on:
+            - task_key: load_providers
+            - task_key: load_service_type
+            - task_key: transform_fact_encounters
+            - task_key: load_date
+            - task_key: load_facilities
+            - task_key: load_member
+            - task_key: load_fact_claims
+          notebook_task:
+            notebook_path: /Workspace/Users/rushikeshsagare2000@gmail.com/hdfc-ergo-data-pipeline/notebook/gold/fact_encounters
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
