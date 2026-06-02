@@ -1,0 +1,15 @@
+{
+	"name": "he-prod-incen-health-adf-01",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "71cb706c-2411-4e90-8dcf-6707eb78bfe6",
+		"tenantId": "424f443b-9f56-40b0-898d-54acfabfa08d"
+	}
+}

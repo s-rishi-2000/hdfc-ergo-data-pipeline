@@ -1,0 +1,29 @@
+{
+	"name": "da_adls_generic_dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_health_lake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FilePath": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().FilePath",
+					"type": "Expression"
+				},
+				"fileSystem": "raw"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
