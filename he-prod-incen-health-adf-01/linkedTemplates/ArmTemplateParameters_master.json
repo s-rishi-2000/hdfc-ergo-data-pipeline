@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "he-prod-incen-health-adf-01"
+		},
+		"ls_adls_health_lake_accountKey": {
+			"value": ""
+		},
+		"ls_databricks_perf_accessToken": {
+			"value": ""
+		},
+		"ls_pg_health_perf_password": {
+			"value": ""
+		},
+		"ls_adls_health_lake_properties_typeProperties_url": {
+			"value": "https://heprodincenhealthdl01.dfs.core.windows.net/"
+		},
+		"ls_pg_health_perf_properties_typeProperties_server": {
+			"value": "localhost"
+		},
+		"ls_pg_health_perf_properties_typeProperties_database": {
+			"value": "health_insurance_perf"
+		},
+		"ls_pg_health_perf_properties_typeProperties_username": {
+			"value": "postgres"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
