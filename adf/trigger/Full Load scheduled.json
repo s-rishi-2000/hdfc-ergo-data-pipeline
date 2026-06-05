@@ -1,5 +1,5 @@
 {
-	"name": "Full Load",
+	"name": "Full Load scheduled",
 	"properties": {
 		"description": "Loads the entire database to snowflake warehouse after applying transformations.",
 		"annotations": [],
