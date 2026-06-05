@@ -1,0 +1,24 @@
+{
+	"name": "Full Load event driven",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_ingest_full_load_master",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/raw/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/441c2aa2-0544-40d1-8840-96d8fc0e9801/resourceGroups/he-prod-incen-analytics-rg-01/providers/Microsoft.Storage/storageAccounts/heprodincenhealthdl01",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
