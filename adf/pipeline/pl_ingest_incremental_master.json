@@ -20,14 +20,6 @@
 						"query": "SELECT table_name FROM core_metadata.watermark_table",
 						"queryTimeout": "02:00:00"
 					},
-					"dataset": {
-						"referenceName": "ds_pg_generic_dynamic",
-						"type": "DatasetReference",
-						"parameters": {
-							"SchemaName": "core_metadata",
-							"TableName": "watermark_table"
-						}
-					},
 					"firstRowOnly": false
 				}
 			},
@@ -76,29 +68,8 @@
 										"type": "ParquetWriteSettings"
 									}
 								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
+								"enableStaging": false
 							},
-							"inputs": [
-								{
-									"referenceName": "ds_pg_generic_dynamic",
-									"type": "DatasetReference",
-									"parameters": {
-										"SchemaName": {
-											"value": "@split(item().table_name, '.')[0]",
-											"type": "Expression"
-										},
-										"TableName": "@split(item().table_name, '.')[1]"
-									}
-								}
-							],
 							"outputs": [
 								{
 									"referenceName": "da_adls_generic_dynamic",
