@@ -12,10 +12,6 @@
 			"sslMode": 2,
 			"authenticationType": "Basic",
 			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJhNTAxMjliYi1hYWU5LTRmNGYtOWYwMy00NTUyMDI2MTBkM2UiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
-		},
-		"connectVia": {
-			"referenceName": "he-prod-incen-shir-01",
-			"type": "IntegrationRuntimeReference"
 		}
 	}
 }
