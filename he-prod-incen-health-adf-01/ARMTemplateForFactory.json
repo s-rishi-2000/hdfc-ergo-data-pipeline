@@ -34,6 +34,10 @@
 		"ls_pg_health_perf_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "postgres"
+		},
+		"Full Load event driven_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/441c2aa2-0544-40d1-8840-96d8fc0e9801/resourceGroups/he-prod-incen-analytics-rg-01/providers/Microsoft.Storage/storageAccounts/heprodincenhealthdl01"
 		}
 	},
 	"variables": {
@@ -206,7 +210,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Lookup1",
+						"name": "GetTableList",
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
@@ -230,7 +234,119 @@
 									"SchemaName": "core_metadata",
 									"TableName": "watermark_table"
 								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "LoopThroughTables",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetTableList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetTableList').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "CopyTableData",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "PostgreSqlV2Source",
+											"queryTimeout": "02:00:00"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_pg_generic_dynamic",
+											"type": "DatasetReference",
+											"parameters": {
+												"SchemaName": {
+													"value": "@split(item().table_name, '.')[0]",
+													"type": "Expression"
+												},
+												"TableName": "@split(item().table_name, '.')[1]"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "da_adls_generic_dynamic",
+											"type": "DatasetReference",
+											"parameters": {
+												"FilePath": {
+													"value": "@concat(split(string(item().table_name), '.')[0], '/', split(string(item().table_name), '.')[1])",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Job1",
+						"type": "DatabricksJob",
+						"dependsOn": [
+							{
+								"activity": "LoopThroughTables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"jobId": "735885823268546"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_databricks_perf",
+							"type": "LinkedServiceReference"
 						}
 					}
 				],
@@ -238,10 +354,12 @@
 					"elapsedTimeMetric": {}
 				},
 				"annotations": [],
-				"lastPublishTime": "2026-06-02T20:36:39Z"
+				"lastPublishTime": "2026-06-02T20:27:10Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_pg_generic_dynamic')]"
+				"[concat(variables('factoryId'), '/datasets/ds_pg_generic_dynamic')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_perf')]",
+				"[concat(variables('factoryId'), '/datasets/da_adls_generic_dynamic')]"
 			]
 		},
 		{
@@ -545,18 +663,37 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/he-prod-incen-shir-01')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"name": "[concat(parameters('factoryName'), '/Full Load event driven')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "SelfHosted",
-				"description": "pgAdmin to azure data factory connection",
-				"typeProperties": {}
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_ingest_full_load_master",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/raw/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('Full Load event driven_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_ingest_full_load_master')]"
+			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Full Load')]",
+			"name": "[concat(parameters('factoryName'), '/Full Load scheduled')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -578,14 +715,24 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2026-06-03T17:00:00",
-						"timeZone": "India Standard Time",
-						"schedule": {}
+						"timeZone": "India Standard Time"
 					}
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_ingest_full_load_master')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/he-prod-incen-shir-01')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "pgAdmin to azure data factory connection",
+				"typeProperties": {}
+			},
+			"dependsOn": []
 		}
 	]
 }

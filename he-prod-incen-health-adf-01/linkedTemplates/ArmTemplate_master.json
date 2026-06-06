@@ -35,6 +35,10 @@
 			"type": "string",
 			"defaultValue": "postgres"
 		},
+		"Full Load event driven_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/441c2aa2-0544-40d1-8840-96d8fc0e9801/resourceGroups/he-prod-incen-analytics-rg-01/providers/Microsoft.Storage/storageAccounts/heprodincenhealthdl01"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -82,6 +86,9 @@
 					},
 					"ls_pg_health_perf_properties_typeProperties_username": {
 						"value": "[parameters('ls_pg_health_perf_properties_typeProperties_username')]"
+					},
+					"Full Load event driven_properties_typeProperties_scope": {
+						"value": "[parameters('Full Load event driven_properties_typeProperties_scope')]"
 					}
 				}
 			},
