@@ -2,7 +2,9 @@
 	"name": "he-prod-incen-health-adf-01",
 	"properties": {
 		"globalConfigurations": {
-			"PipelineBillingEnabled": "true"
+			"PipelineBillingEnabled": "true",
+			"factoryStagingLSReferenceName": "ls_adls_health_lake",
+			"factoryStagingLSType": "LinkedServiceReference"
 		},
 		"trustModeClaimForMi": {
 			"value": "Disabled",
