@@ -1,7 +1,0 @@
-{
-	"name": "he-prod-incen-shir-01",
-	"properties": {
-		"type": "SelfHosted",
-		"description": "pgAdmin to azure data factory connection"
-	}
-}
