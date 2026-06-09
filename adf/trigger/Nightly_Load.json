@@ -1,0 +1,25 @@
+{
+	"name": "Nightly_Load",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_ingest_full_load",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2026-06-09T09:45:00",
+				"endTime": "2026-06-14T13:34:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}
