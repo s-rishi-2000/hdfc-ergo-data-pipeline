@@ -1,0 +1,143 @@
+{
+	"name": "pl_ingest_full_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetTableList",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "PostgreSqlV2Source",
+						"query": "SELECT table_name FROM core_metadata.watermark_table",
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "ds_pg_generic_dynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": "core_metadata",
+							"TableName": "watermark_table"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "LoopThroughTables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetTableList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetTableList').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "CopyTableData",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "PostgreSqlV2Source",
+									"queryTimeout": "02:00:00"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_pg_generic_dynamic",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": "@split(item().table_name, '.')[0]",
+										"TableName": "@split(item().table_name, '.')[1]"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_adls_raw_parquet_dynamic",
+									"type": "DatasetReference",
+									"parameters": {
+										"FilePath": "@concat(split(item().table_name, '.')[0], '/', split(item().table_name, '.')[1])"
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Job1",
+				"type": "DatabricksJob",
+				"dependsOn": [
+					{
+						"activity": "LoopThroughTables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"jobId": "735885823268546"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_databricks_perf",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-06-08T14:45:25Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
