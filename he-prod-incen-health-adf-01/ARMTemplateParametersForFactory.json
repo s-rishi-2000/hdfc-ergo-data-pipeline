@@ -25,9 +25,6 @@
 		},
 		"ls_pg_health_perf_properties_typeProperties_username": {
 			"value": "postgres"
-		},
-		"Full Load event driven_properties_typeProperties_scope": {
-			"value": "/subscriptions/441c2aa2-0544-40d1-8840-96d8fc0e9801/resourceGroups/he-prod-incen-analytics-rg-01/providers/Microsoft.Storage/storageAccounts/heprodincenhealthdl01"
 		}
 	}
 }

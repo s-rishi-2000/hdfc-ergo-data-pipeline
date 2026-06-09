@@ -34,10 +34,6 @@
 		"ls_pg_health_perf_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "postgres"
-		},
-		"Full Load event driven_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/441c2aa2-0544-40d1-8840-96d8fc0e9801/resourceGroups/he-prod-incen-analytics-rg-01/providers/Microsoft.Storage/storageAccounts/heprodincenhealthdl01"
 		}
 	},
 	"variables": {
@@ -74,9 +70,9 @@
 						"type": "SecureString",
 						"value": "[parameters('ls_databricks_perf_accessToken')]"
 					},
-					"newClusterNodeType": "Standard_DS3_v2",
+					"newClusterNodeType": "Standard_D4ds_v5",
 					"newClusterNumOfWorker": "1",
-					"newClusterVersion": "17.3.x-cpu-ml-scala2.13",
+					"newClusterVersion": "17.3.x-gpu-ml-scala2.13",
 					"clusterOption": "Fixed",
 					"newClusterInitScripts": []
 				}
@@ -89,13 +85,38 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"type": "SelfHosted",
-				"description": "pgAdmin to azure data factory connection",
 				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/da_adls_generic_dynamic')]",
+			"name": "[concat(parameters('factoryName'), '/ds_adls_raw_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_health_lake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "data.parquet",
+						"folderPath": "lookups/dim_service_types",
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_health_lake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_adls_raw_parquet_dynamic')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -117,60 +138,6 @@
 							"value": "@dataset().FilePath",
 							"type": "Expression"
 						},
-						"fileSystem": "raw"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_health_lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_adls_raw_csv')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_adls_health_lake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "data.csv",
-						"folderPath": "lookups/dim_service_types",
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_health_lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_adls_raw_fact_claims_parquet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_adls_health_lake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "claims/fact_claims",
 						"fileSystem": "raw"
 					},
 					"compressionCodec": "snappy"
@@ -207,27 +174,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/he-prod-incen-shir-01')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_pg_fact_claims')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_pg_health_perf",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "PostgreSqlV2Table",
-				"schema": [],
-				"typeProperties": {
-					"schema": "claims",
-					"table": "fact_claims"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_pg_health_perf')]"
 			]
 		},
 		{
@@ -287,7 +233,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_ingest_full_load_master')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ingest_full_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -338,7 +284,6 @@
 								"value": "@activity('GetTableList').output.value",
 								"type": "Expression"
 							},
-							"isSequential": true,
 							"activities": [
 								{
 									"name": "CopyTableData",
@@ -381,23 +326,17 @@
 											"referenceName": "ds_pg_generic_dynamic",
 											"type": "DatasetReference",
 											"parameters": {
-												"SchemaName": {
-													"value": "@split(item().table_name, '.')[0]",
-													"type": "Expression"
-												},
+												"SchemaName": "@split(item().table_name, '.')[0]",
 												"TableName": "@split(item().table_name, '.')[1]"
 											}
 										}
 									],
 									"outputs": [
 										{
-											"referenceName": "da_adls_generic_dynamic",
+											"referenceName": "ds_adls_raw_parquet_dynamic",
 											"type": "DatasetReference",
 											"parameters": {
-												"FilePath": {
-													"value": "@concat(split(string(item().table_name), '.')[0], '/', split(string(item().table_name), '.')[1])",
-													"type": "Expression"
-												}
+												"FilePath": "@concat(split(item().table_name, '.')[0], '/', split(item().table_name, '.')[1])"
 											}
 										}
 									]
@@ -437,171 +376,12 @@
 					"elapsedTimeMetric": {}
 				},
 				"annotations": [],
-				"lastPublishTime": "2026-06-02T20:27:10Z"
+				"lastPublishTime": "2026-06-08T14:45:25Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_pg_generic_dynamic')]",
 				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_perf')]",
-				"[concat(variables('factoryId'), '/datasets/da_adls_generic_dynamic')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ingest_incremental_master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "GetTableList",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "PostgreSqlV2Source",
-								"query": "SELECT table_name FROM core_metadata.watermark_table",
-								"queryTimeout": "02:00:00"
-							},
-							"dataset": {
-								"referenceName": "ds_pg_generic_dynamic",
-								"type": "DatasetReference",
-								"parameters": {
-									"SchemaName": "core_metadata",
-									"TableName": "watermark_table"
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "LoopThroughTables",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "GetTableList",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('GetTableList').output.value",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "CopyTableData",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "PostgreSqlV2Source",
-											"queryTimeout": "02:00:00"
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "ParquetWriteSettings"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "ds_pg_generic_dynamic",
-											"type": "DatasetReference",
-											"parameters": {
-												"SchemaName": {
-													"value": "@split(item().table_name, '.')[0]",
-													"type": "Expression"
-												},
-												"TableName": "@split(item().table_name, '.')[1]"
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "da_adls_generic_dynamic",
-											"type": "DatasetReference",
-											"parameters": {
-												"FilePath": {
-													"value": "@concat(split(string(item().table_name), '.')[0], '/', split(string(item().table_name), '.')[1])",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"name": "Job1",
-						"type": "DatabricksJob",
-						"dependsOn": [
-							{
-								"activity": "LoopThroughTables",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"jobId": "735885823268546"
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_databricks_perf",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2026-06-02T20:27:10Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_pg_generic_dynamic')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_databricks_perf')]",
-				"[concat(variables('factoryId'), '/datasets/da_adls_generic_dynamic')]"
+				"[concat(variables('factoryId'), '/datasets/ds_adls_raw_parquet_dynamic')]"
 			]
 		},
 		{
@@ -648,14 +428,14 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_pg_fact_claims",
+								"referenceName": "ds_pg_service_types",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "ds_adls_raw_fact_claims_parquet",
+								"referenceName": "ds_adls_raw_parquet",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -666,55 +446,24 @@
 					"elapsedTimeMetric": {}
 				},
 				"annotations": [],
-				"lastPublishTime": "2026-06-02T18:44:42Z"
+				"lastPublishTime": "2026-06-08T13:16:42Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_pg_fact_claims')]",
-				"[concat(variables('factoryId'), '/datasets/ds_adls_raw_fact_claims_parquet')]"
+				"[concat(variables('factoryId'), '/datasets/ds_pg_service_types')]",
+				"[concat(variables('factoryId'), '/datasets/ds_adls_raw_parquet')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Full Load event driven')]",
+			"name": "[concat(parameters('factoryName'), '/Nightly_Load')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "pl_ingest_full_load_master",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/raw/blobs/",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('Full Load event driven_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ingest_full_load_master')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Full Load scheduled')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Loads the entire database to snowflake warehouse after applying transformations.",
 				"annotations": [],
 				"runtimeState": "Started",
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "pl_ingest_full_load_master",
+							"referenceName": "pl_ingest_full_load",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -723,15 +472,16 @@
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
-						"frequency": "Day",
+						"frequency": "Minute",
 						"interval": 1,
-						"startTime": "2026-06-03T17:00:00",
+						"startTime": "2026-06-08T22:00:00",
+						"endTime": "2026-06-14T13:34:00",
 						"timeZone": "India Standard Time"
 					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ingest_full_load_master')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_ingest_full_load')]"
 			]
 		}
 	]
